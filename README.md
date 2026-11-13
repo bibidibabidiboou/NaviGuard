@@ -22,7 +22,9 @@
 
 ---
 
-> ⚠️ **Disclaimer:** NaviGuard is an independent open-source project and is not affiliated with, endorsed by, or associated with Nintendo. While NaviGuard effectively blocks console telemetry, update pings, and communication with Nintendo servers, no software can guarantee 100% protection against console bans. Always use responsibly with games and hardware you legally own.
+> ⚠️ **Disclaimer:**
+> - **Nintendo Affiliation:** NaviGuard is an independent open-source project and is not affiliated with, endorsed by, or associated with Nintendo. While NaviGuard effectively blocks console telemetry, update pings, and communication with Nintendo servers, no software can guarantee 100% protection against console bans. Always use responsibly with games and hardware you legally own.
+> - **Vibe Coded Disclaimer:** This project was vibe coded with AI assistance (Google Gemini). While it is functional, tested, and gets the job done, feel free to inspect the code and use it at your own discretion! Pull requests and optimizations are always welcome.
 
 ---
 
