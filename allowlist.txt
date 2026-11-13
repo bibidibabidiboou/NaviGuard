@@ -1,0 +1,5 @@
+# Domains that are NEVER blocked in "Block Nintendo only" mode.
+# One per line. Subdomains are included automatically.
+# (Ignored in Offline mode, which blocks everything.)
+# Example:
+# nintendolife.com

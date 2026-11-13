@@ -1,0 +1,4 @@
+# Extra domains to block (in addition to every *nintendo* domain).
+# One per line. Subdomains are included automatically.
+# Example:
+# example-telemetry.com
