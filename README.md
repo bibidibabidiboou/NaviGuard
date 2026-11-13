@@ -35,7 +35,7 @@
 By running locally on your Windows PC and pairing with any spare Wi-Fi router, NaviGuard creates a private, isolated sandbox network:
 
 - **Automatic Configuration:** The console joins your spare router's Wi-Fi with default *automatic* settings. No manual IP or DNS entry needed on the console.
-- **Connection Test Emulation:** Answers Nintendo's network tests (`ctest.cdn.nintendo.net` / `conntest.nintendowifi.net`) locally, so the console happily reports **"Connected to the Internet"** without ever reaching external servers.
+- **Connection Test Emulation:** Answers Nintendo's network tests (Switch 2: `ctest.p01.ctest.srv.nintendo.net`, Switch 1: `ctest.cdn.nintendo.net`, plus `conntest.nintendowifi.net` and any other Nintendo `ctest`/`conntest` host) locally, so the console happily reports **"Connected to the Internet"** without ever reaching external servers.
 - **Air-Gapped & Leak-Proof:** The spare router's WAN port stays unplugged. Consoles cannot leak data or bypass DNS via hardcoded IPs.
 - **Zero Terminal / Zero Dependencies:** Single portable `.exe` with a clean dark-mode GUI and system tray support.
 
@@ -184,6 +184,13 @@ The compiled executable will be output to `release\NaviGuard.exe`.
 Get the latest release from the [Releases](https://github.com/bibidibabidiboou/NaviGuard/releases) tab:
 - **`NaviGuard.exe`**: Standalone executable (no installation required).
 - **`NaviGuard-v3.0.0.zip`**: Complete bundle including default configuration files and documentation.
+
+---
+
+## Contributors
+
+- [@bibidibabidiboou](https://github.com/bibidibabidiboou) — Creator & Maintainer
+- [@gemini-code-assist](https://github.com/gemini-code-assist) (Google Gemini) — Contributor & AI Co-Developer
 
 ---
 

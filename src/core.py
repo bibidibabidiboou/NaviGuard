@@ -61,10 +61,22 @@ BLOCK_SUFFIXES = {
 # at this PC and answer like Nintendo's test server would, so the console
 # still considers itself online.
 CONNTEST_HOSTS = {
-    "ctest.cdn.nintendo.net",
-    "conntest.nintendowifi.net",
-    "ctest.cdn.n.nintendoswitch.cn",
+    "ctest.cdn.nintendo.net",                 # Switch 1
+    "conntest.nintendowifi.net",              # older consoles
+    "ctest.cdn.n.nintendoswitch.cn",          # Switch 1 (China)
+    "ctest.p01.ctest.srv.nintendo.net",       # Switch 2
 }
+# Also treated as a connection test: any Nintendo domain with a 'ctest' or
+# 'conntest' label, so future test hosts keep working without an update.
+CONNTEST_LABELS = ("ctest", "conntest")
+
+
+def is_conntest(name):
+    if name in CONNTEST_HOSTS:
+        return True
+    labels = name.split(".")
+    nintendo = any(label.startswith(BLOCK_LABEL_PREFIXES) for label in labels)
+    return nintendo and any(label in CONNTEST_LABELS for label in labels)
 
 SINKHOLE_V4 = "127.0.0.1"
 QTYPE_A = 1
@@ -105,7 +117,7 @@ class Rules:
     def classify(self, name):
         """'conntest', 'block' or 'allow' for a lowercase domain name."""
         name = name.lower().rstrip(".")
-        if name in CONNTEST_HOSTS:
+        if is_conntest(name):
             return "conntest"
         if self.mode == MODE_OFFLINE:
             return "block"
@@ -289,6 +301,24 @@ class _TCP(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = os.name != "nt"
 
 
+class _HttpsWatcher(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """Listens on 443 only to REPORT secure (HTTPS) connection-test attempts.
+    HTTPS can't be faked without Nintendo's certificate, so this just logs
+    which console tried it, then closes the connection."""
+    daemon_threads = True
+    allow_reuse_address = os.name != "nt"
+
+
+class _HttpsWatchHandler(socketserver.BaseRequestHandler):
+    def handle(self):
+        srv = self.server
+        client = self.client_address[0]
+        if client not in srv.reported:
+            srv.reported.add(client)
+            srv.engine._event("info", client, "tried a secure (HTTPS) connection on port 443 - "
+                                              "this can't be faked; please report it")
+
+
 class _HTTP(ThreadingHTTPServer):
     daemon_threads = True
     # On Windows SO_REUSEADDR lets two programs share a port silently;
@@ -312,7 +342,8 @@ class _ConntestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.wfile.write(self._reply())
-        self.server.engine._event("conntest_ok", self.client_address[0], self.path)
+        host = self.headers.get("Host", "")
+        self.server.engine._event("conntest_ok", self.client_address[0], f"{host}{self.path}")
 
     def do_HEAD(self):
         self._reply()
@@ -379,6 +410,14 @@ class Engine:
                 self._event("info", "", "Port 80 is busy, so the connection test can't be "
                             f"answered ({e}). The console may say it is not connected. "
                             "Close any local web server (IIS, Skype, XAMPP) and restart.")
+
+            try:
+                https = _HttpsWatcher((self.bind, 443), _HttpsWatchHandler)
+                https.engine = self
+                https.reported = set()
+                self._servers.append(https)
+            except OSError:
+                pass  # port 443 busy - only used for diagnostics
 
         for srv in self._servers:
             threading.Thread(target=srv.serve_forever, daemon=True).start()

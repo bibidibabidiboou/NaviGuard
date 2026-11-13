@@ -828,7 +828,7 @@ class App:
                     self.console_lbl.configure(
                         text=f"Console {client}: connection test PASSED  ({core.timestamp()})",
                         fg=GREEN)
-                    detail = "connection test answered - console thinks it's online"
+                    detail = f"connection test answered ({detail}) - console thinks it's online"
                 if kind == "allow" and self.hide_allowed.get():
                     continue
                 self.add_log(kind, client, detail)

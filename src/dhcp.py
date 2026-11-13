@@ -210,8 +210,15 @@ class DhcpServer:
                 data, _ = self._sock.recvfrom(4096)
             except socket.timeout:
                 continue
+            except ConnectionResetError:
+                # Windows reports "port unreachable" from an earlier reply
+                # (e.g. a console that went to sleep) on the NEXT read. Harmless.
+                continue
             except OSError:
-                break
+                if self._stop.is_set():
+                    break
+                time.sleep(0.2)
+                continue
             req = _parse(data)
             if not req or req["op"] != 1 or OPT_MSGTYPE not in req["opts"]:
                 continue
