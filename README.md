@@ -185,6 +185,13 @@ Get the latest release from the [Releases](https://github.com/bibidibabidiboou/N
 
 ---
 
+## Contributors
+
+- [@bibidibabidiboou](https://github.com/bibidibabidiboou) — Creator & Maintainer
+- [@gemini-code-assist](https://github.com/gemini-code-assist) (Google Gemini) — Contributor & AI Co-Developer
+
+---
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
